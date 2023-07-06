@@ -1,10 +1,18 @@
-import levelUm from '../levels/levelUm';
-
-function menu() {
+function levelUm() {
   loadSprite('bloco', 'sprites/bloco.png');
   loadSprite('tijolos', 'sprites/tijolos.png');
   loadSprite('bg', 'sprites/background.png');
   loadSprite('cano', 'sprites/cano.png');
+  loadSprite('cogumeloE', 'sprites/cogumeloE.png', {
+    anims: {
+      idle: {
+        from: 0,
+        to: 0,
+        loop: true,
+      },
+    },
+  });
+  loadSprite('cogumeloD', 'sprites/cogumeloD.png');
   loadSprite('mario', 'sprites/marioAndando.png', {
     sliceX: 3.9,
     anims: {
@@ -55,28 +63,50 @@ function menu() {
       '2                                2',
       '2                                2',
       '2                                2',
+      '2           2222                 2',
+      '2                                2',
+      '2     222                        2',
       '2                                2',
       '2                                2',
-      '2              2222              2',
-      '2                     22         2',
-      '2         22          22     2   2',
-      '2    2    2           22   22  3 2',
-      '2    2    2           22   22    2',
+      '2    2                         3 2',
+      '2    2                           2',
       '1111111111111111111111111111111111',
       '1111111111111111111111111111111111',
+      '1111111111111111111111111114111111',
     ];
 
     const levelCfg = {
       width: 20,
       height: 20,
       1: () => [sprite('bloco'), solid(), area()],
-      2: () => [sprite('tijolos'), solid(), area()],
+      2: () => [sprite('tijolos'), solid(), area(), 'tijolos'],
       3: () => [sprite('cano'), solid(), area(), 'cano'],
+      4: () => [sprite('cogumeloE'), solid(), area(), 'cogumelo'],
     };
 
+    const cogumeloE = add([
+      sprite('cogumeloE'),
+      solid(),
+      area(),
+      body(),
+      pos(250, 300),
+      origin('bot'),
+    ]);
+
+    action('cogumelo', () => {
+      cogumeloE.move(-20, 0);
+      // cogumeloE.flipX(false);
+      cogumeloE.collides('tijolos', () => {
+        cogumeloE.play('idle');
+        cogumeloE.flipX(true);
+        if (cogumeloE.flipX(true)) {
+          cogumeloE.move(20, 0);
+        }
+      });
+    });
     const player = add([
       sprite('mario', {
-        animSpeed: 0.5,
+        animSpeed: 1,
         frame: 0,
       }),
       solid(),
@@ -86,7 +116,7 @@ function menu() {
       origin('bot'),
     ]);
 
-    player.collides('cano', () => {
+    player.onCollide('cano', () => {
       keyPress('down', () => {
         go('game');
       });
@@ -117,26 +147,8 @@ function menu() {
       player.play('idle');
     });
 
-    addButton('Start', vec2(340, 140), () => levelUm());
-    addButton('Quit', vec2(340, 170), () => debug.log('bye'));
-
-    add([
-      text('[Mario].wavy'),
-      {
-        width: width(),
-        font: 'sinko',
-        textSize: 48,
-        styles: {
-          wavy: (idx, ch) => ({
-            color: rgb(255, 255, 255),
-            pos: vec2(250, wave(50, 60, time() * 4 + idx * 0.5)),
-          }),
-        },
-      },
-    ]);
-
     const gameLevel = addLevel(maps, levelCfg);
   });
   go('game');
 }
-export default menu;
+export default levelUm;
