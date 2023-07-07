@@ -1,10 +1,11 @@
-import levelUm from '../levels/levelUm';
-
-function menu() {
+function levelUm() {
   loadSprite('bloco', 'sprites/bloco.png');
   loadSprite('tijolos', 'sprites/tijolos.png');
   loadSprite('bg', 'sprites/background.png');
   loadSprite('cano', 'sprites/cano.png');
+  loadSprite('cogumeloE', 'sprites/cogumeloE.png');
+  loadSprite('cogumeloD', 'sprites/cogumeloD.png');
+  loadSprite('flor', 'sprites/flor.png');
   loadSprite('mario', 'sprites/marioAndando.png', {
     sliceX: 3.9,
     anims: {
@@ -21,27 +22,61 @@ function menu() {
     },
   });
 
-  function addButton(txt, p, f) {
-    const btn = add([
-      text(txt, { size: 28 }),
-      pos(p),
+  let direction = 1;
+  let direction1 = 1;
+  let speed = 25;
+
+  function moverCogumelos() {
+    function invertDirectionE() {
+      direction1 *= -1;
+    }
+    function invertDirection() {
+      direction *= -1;
+    }
+
+    var cogumelo = add([
+      sprite('cogumeloE'),
       area(),
-      scale(1),
-      origin('center'),
+      solid(),
+      pos(250, 300),
+      origin('bot'),
+      'cogumelo',
     ]);
-
-    btn.onClick(f);
-
-    btn.onUpdate(() => {
-      if (btn.isHovering()) {
-        btn.scale = vec2(1.2);
-      } else {
-        btn.scale = vec2(1);
-        btn.color = rgb();
-      }
+    cogumelo.action(() => {
+      cogumelo.move(speed * direction, 0);
     });
 
-    return btn;
+    cogumelo.collides('cano', () => {
+      invertDirection();
+    });
+    cogumelo.collides('tijolos', () => {
+      invertDirection();
+    });
+    cogumelo.collides('cogumelo1', () => {
+      invertDirectionE();
+    });
+
+    var cogumelo2 = add([
+      sprite('cogumeloE'),
+      area(),
+      solid(),
+      pos(250, 300),
+      origin('bot'),
+      'cogumelo1',
+    ]);
+    cogumelo2.action(() => {
+      cogumelo2.move(-speed * direction1, 0);
+    });
+
+    cogumelo2.collides('cano', () => {
+      invertDirectionE();
+    });
+    cogumelo2.collides('tijolos', () => {
+      invertDirectionE();
+    });
+    cogumelo2.collides('cogumelo', () => {
+      invertDirection();
+    });
   }
 
   scene('game', () => {
@@ -54,14 +89,14 @@ function menu() {
       '2                                2',
       '2                                2',
       '2                                2',
+      '2              4                 2',
+      '2           2222                 2',
+      '2                                2',
+      '2     222                        2',
       '2                                2',
       '2                                2',
-      '2                                2',
-      '2              2222              2',
-      '2                     22         2',
-      '2         22          22     2   2',
-      '2    2    2           22   22  3 2',
-      '2    2    2           22   22    2',
+      '2    2                         3 2',
+      '2    2                           2',
       '1111111111111111111111111111111111',
       '1111111111111111111111111111111111',
     ];
@@ -70,13 +105,14 @@ function menu() {
       width: 20,
       height: 20,
       1: () => [sprite('bloco'), solid(), area()],
-      2: () => [sprite('tijolos'), solid(), area()],
+      2: () => [sprite('tijolos'), solid(), area(), 'tijolos'],
       3: () => [sprite('cano'), solid(), area(), 'cano'],
+      4: () => [sprite('flor'), solid(), area(), 'flor'],
     };
-
+    moverCogumelos();
     const player = add([
       sprite('mario', {
-        animSpeed: 0.5,
+        animSpeed: 1,
         frame: 0,
       }),
       solid(),
@@ -86,7 +122,12 @@ function menu() {
       origin('bot'),
     ]);
 
-    player.collides('cano', () => {
+    player.onCollide('cano', () => {
+      keyPress('down', () => {
+        go('game');
+      });
+    });
+    player.onCollide('cogumelo', () => {
       keyPress('down', () => {
         go('game');
       });
@@ -117,26 +158,8 @@ function menu() {
       player.play('idle');
     });
 
-    addButton('Start', vec2(340, 140), () => levelUm());
-    addButton('Quit', vec2(340, 170), () => debug.log('bye'));
-
-    add([
-      text('[Mario].wavy'),
-      {
-        width: width(),
-        font: 'sinko',
-        textSize: 48,
-        styles: {
-          wavy: (idx, ch) => ({
-            color: rgb(255, 255, 255),
-            pos: vec2(250, wave(50, 60, time() * 4 + idx * 0.5)),
-          }),
-        },
-      },
-    ]);
-
     const gameLevel = addLevel(maps, levelCfg);
   });
   go('game');
 }
-export default menu;
+export default levelUm;
