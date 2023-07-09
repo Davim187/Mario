@@ -1,6 +1,6 @@
-import levelDois from "./levelDois";
 
-function levelUm() {
+
+function levelDois() {
   loadSprite('bloco', 'sprites/bloco.png');
   loadSprite('tijolos', 'sprites/tijolos.png');
   loadSprite('bg', 'sprites/background.png');
@@ -97,7 +97,7 @@ function levelUm() {
         value: score,
       }
     ])
-    add([text('level: 1', {size:15} ), pos(30, 6)])
+    add([text('level: 2', {size:15} ), pos(30, 6)])
 
     const maps = [
       '2                                2',
@@ -106,15 +106,15 @@ function levelUm() {
       '2                                2',
       '2                                2',
       '2                                2',
-      '2                     222        2',
-      '2            4    2    2         2',
-      '2           2222       2         2',
-      '2                      2         2',
-      '2     222              2         2',
-      '2                      2         2',
-      '2               5      2         2',
-      '2    2                 2       3 2',
-      '2    2                 2         2',
+      '2                                2',
+      '2                                2',
+      '2                                2',
+      '2                                2',
+      '2                                2',
+      '2                                2',
+      '2                                2',
+      '2                                2',
+      '2                                2',
       '1111111111111111111111111111111111',
       '1111111111111111111111111111111111',
     ];
@@ -186,8 +186,7 @@ function levelUm() {
 
     player.onCollide('cano', () => {
       keyPress('down', () => {
-      go('game',{ score:  scoreLabel.value},levelDois({score:scoreLabel.value}),)
-        
+        go('game',  {score: scoreLabel.value});
       });
     });
 
@@ -253,10 +252,9 @@ scene('kill', ({score}) =>{
     },
   ]); 
   onKeyPress('space', () => {
-    go('game',{ score:  0})
-
+    go('game',{ score:  score})
   });
 })
 go('game', { score: 0});
 }
-export default levelUm;
+export default levelDois;

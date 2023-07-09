@@ -5,6 +5,12 @@ function menu() {
   loadSprite('tijolos', 'sprites/tijolos.png');
   loadSprite('bg', 'sprites/background.png');
   loadSprite('cano', 'sprites/cano.png');
+  loadSprite('cogumeloE', 'sprites/cogumeloE.png');
+  loadSprite('cogumeloD', 'sprites/cogumeloD.png');
+  loadSprite('flor', 'sprites/flor.png');
+  loadSprite('caixaSupresa', 'sprites/caixaSupresa.png');
+  loadSprite('caixaSupresaDesativada', 'sprites/caixaSupresaDesativada.png');
+  loadSprite('moeda', 'sprites/moeda.png');
   loadSprite('mario', 'sprites/marioAndando.png', {
     sliceX: 3.9,
     anims: {
