@@ -1,6 +1,5 @@
-import levelDois from './levelDois';
-
-function levelUm() {
+import levelTres from './levelTres';
+function levelDois() {
   loadSprite('bloco', 'sprites/bloco.png');
   loadSprite('tijolos', 'sprites/tijolos.png');
   loadSprite('bg', 'sprites/background.png');
@@ -11,6 +10,7 @@ function levelUm() {
   loadSprite('caixaSupresa', 'sprites/caixaSupresa.png');
   loadSprite('caixaSupresaDesativada', 'sprites/caixaSupresaDesativada.png');
   loadSprite('moeda', 'sprites/moeda.png');
+  loadSprite('caixaSupresacogumelo', 'sprites/cogumeloCrescer.png');
   loadSprite('mario', 'sprites/marioAndando.png', {
     sliceX: 3.9,
     anims: {
@@ -29,17 +29,12 @@ function levelUm() {
 
   let direction = 1;
   let direction1 = 1;
+  let direction2 = 1;
   let speed = 25;
   let jump = false;
+  let isBig = false;
 
-  function moverCogumelos() {
-    function invertDirectionE() {
-      direction1 *= -1;
-    }
-    function invertDirection() {
-      direction *= -1;
-    }
-
+  function movercogumelos() {
     var cogumelo = add([
       sprite('cogumeloE'),
       area(),
@@ -54,21 +49,28 @@ function levelUm() {
       solid(),
       pos(550, 300),
       origin('bot'),
-      'cogumelo1',
+      'cogumelo',
     ]);
-
+    var cogumelo3 = add([
+      sprite('cogumeloE'),
+      area(),
+      solid(),
+      pos(450, 300),
+      origin('bot'),
+      'cogumelo',
+    ]);
     action(() => {
       cogumelo.move(speed * direction, 0);
     });
 
     cogumelo.collides('cano', () => {
-      invertDirection();
+      direction *= -1;
     });
     cogumelo.collides('tijolos', () => {
-      invertDirection();
+      direction *= -1;
     });
-    cogumelo.collides('cogumelo1', () => {
-      invertDirectionE();
+    cogumelo.collides('cogumelo', () => {
+      direction *= -1;
     });
 
     action(() => {
@@ -76,19 +78,32 @@ function levelUm() {
     });
 
     cogumelo2.collides('cano', () => {
-      invertDirectionE();
+      direction1 *= -1;
     });
     cogumelo2.collides('tijolos', () => {
-      invertDirectionE();
+      direction1 *= -1;
     });
     cogumelo2.collides('cogumelo', () => {
-      invertDirection();
+      direction1 *= -1;
+    });
+    action(() => {
+      cogumelo3.move(-speed * direction2, 0);
+    });
+
+    cogumelo3.collides('cano', () => {
+      direction2 *= -1;
+    });
+    cogumelo3.collides('tijolos', () => {
+      direction2 *= -1;
+    });
+    cogumelo3.collides('cogumelo', () => {
+      direction2 *= -1;
     });
   }
 
-  scene('game', ({ score }) => {
+  scene('game', ({ score, big }) => {
     add([sprite('bg'), pos(0, -21)], fixed());
-    moverCogumelos();
+    movercogumelos();
     const scoreLabel = add([
       text('moeda: ' + score, { size: 15 }),
       pos(30, 25),
@@ -97,7 +112,7 @@ function levelUm() {
         value: score,
       },
     ]);
-    add([text('level: 1', { size: 15 }), pos(30, 6)]);
+    add([text('level: 2', { size: 15 }), pos(30, 6)]);
 
     const maps = [
       '2                                2',
@@ -105,16 +120,16 @@ function levelUm() {
       '2                                2',
       '2                                2',
       '2                                2',
+      '2                9               2',
       '2                                2',
-      '2                     222        2',
-      '2            4    2    2         2',
-      '2           2222       2         2',
-      '2                      2         2',
-      '2     222              2         2',
-      '2                      2         2',
-      '2               5      2         2',
-      '2    2                 2       3 2',
-      '2    2                 2         2',
+      '2                                2',
+      '2                                2',
+      '2                                2',
+      '2           5111   1111          2',
+      '2                                2',
+      '2       11             115       2',
+      '2     11                      3  2',
+      '2                                2',
       '1111111111111111111111111111111111',
       '1111111111111111111111111111111111',
     ];
@@ -134,6 +149,19 @@ function levelUm() {
         'caixaSupresaDesativada',
       ],
       7: () => [sprite('moeda'), area(), 'moeda'],
+      8: () => [
+        sprite('caixaSupresacogumelo'),
+        solid(),
+        area(),
+        'cogumeloCrescer',
+        body(),
+      ],
+      9: () => [
+        sprite('caixaSupresa'),
+        solid(),
+        area(),
+        'caixaSupresacogumelo',
+      ],
     };
 
     //// Mario
@@ -145,6 +173,7 @@ function levelUm() {
       }),
       solid(),
       area(),
+      big(),
       body(),
       pos(60, 0),
       origin('bot'),
@@ -192,7 +221,7 @@ function levelUm() {
         go(
           'game',
           { score: scoreLabel.value },
-          levelDois({ score: scoreLabel.value })
+          levelTres({ score: scoreLabel.value })
         );
       });
     });
@@ -204,19 +233,20 @@ function levelUm() {
     player.onCollide('cogumelo', (c) => {
       if (jump == true) {
         destroy(c);
+      } else if (isBig) {
+        player.jump(350);
+        player.smallify();
       } else {
         go('kill', { score: scoreLabel.value });
       }
     });
-
-    player.onCollide('cogumelo1', (c) => {
-      if (jump == true) {
-        destroy(c);
-      } else {
-        go('kill', { score: scoreLabel.value });
-      }
+    onCollide('cogumeloCrescer', 'cogumelo', (cogumeloCrescer) => {
+      destroy(cogumeloCrescer);
     });
-
+    player.onCollide('cogumeloCrescer', (cogumeloCrescer) => {
+      destroy(cogumeloCrescer);
+      player.biggify();
+    });
     //// Moedas
     player.onHeadbutt((obj) => {
       if (obj.is('caixaSupresa')) {
@@ -225,7 +255,38 @@ function levelUm() {
         gameLevel.spawn('6', obj.gridPos.sub(0, 0));
       }
     });
-
+    //// Fazer mario crescer
+    function big() {
+      return {
+        isBig() {
+          return isBig;
+        },
+        smallify() {
+          this.scale = vec2(1);
+          isBig = false;
+        },
+        biggify() {
+          this.scale = vec2(1.2);
+          isBig = true;
+        },
+      };
+    }
+    if (isBig) {
+      player.biggify();
+    }
+    player.onHeadbutt((obj) => {
+      if (obj.is('caixaSupresacogumelo')) {
+        gameLevel.spawn('8', obj.gridPos.sub(0, 1));
+        destroy(obj);
+        gameLevel.spawn('6', obj.gridPos.sub(0, 0));
+      }
+    });
+    action('cogumeloCrescer', (cogumeloCrescer) => {
+      cogumeloCrescer.move(speed * direction, 0);
+      cogumeloCrescer.onCollide('tijolos', () => {
+        invertDirection();
+      });
+    });
     //// jump
     action(() => {
       if (player.isGrounded()) {
@@ -256,9 +317,9 @@ function levelUm() {
       },
     ]);
     onKeyPress('space', () => {
-      go('game', { score: 0 });
+      go('game', { score: score, big: isBig });
     });
   });
-  go('game', { score: 0 });
+  go('game', { score: 0, big: isBig });
 }
-export default levelUm;
+export default levelDois;
