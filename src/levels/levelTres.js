@@ -296,7 +296,7 @@ function levelTres(big) {
       },
     ]);
     onKeyPress('space', () => {
-      go('game', { score: score, big: isBig });
+      go('game', { score: 0, big: isBig });
     });
   });
   go('game', { score: 0, big: isBig });

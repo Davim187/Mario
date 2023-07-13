@@ -1,5 +1,6 @@
-import levelCinco from './levelCinco';
-function levelQuatro(big) {
+import menu from '../MenuInicial/menu';
+
+function levelSeis(big) {
   loadSprite('bloco', 'sprites/bloco.png');
   loadSprite('tijolos', 'sprites/tijolos.png');
   loadSprite('bg', 'sprites/background.png');
@@ -91,24 +92,24 @@ function levelQuatro(big) {
         value: score,
       },
     ]);
-    add([text('level: 4', { size: 15 }), pos(30, 6)]);
+    add([text('level: 6', { size: 15 }), pos(30, 6)]);
 
     const maps = [
       '2                                2',
       '2                                2',
+      '2                           3    2',
       '2                                2',
+      '2                          222   2',
+      '2             59       22        2',
+      '2                  2             2',
       '2                                2',
-      '2                                2',
-      '2              5                 2',
-      '2                                2',
-      '2                                2',
-      '2              2                 2',
-      '2                                2',
-      '2        2          2            2',
-      '2       22      2   22           2',
-      '2     2222    2     2222         2',
-      '2   222222          222222    3  2',
-      '2  2222222          2222222      2',
+      '2            2222                2',
+      '2         2                      2',
+      '2       2                        2',
+      '2      22                        2',
+      '2     222                        2',
+      '2    2222                        2',
+      '2   22222                        2',
       '1111111111111111111111111111111111',
       '1111111111111111111111111111111111',
     ];
@@ -197,11 +198,7 @@ function levelQuatro(big) {
 
     player.onCollide('cano', () => {
       keyPress('down', () => {
-        go(
-          'game',
-          { score: scoreLabel.value, big: isBig },
-          levelCinco({ score: scoreLabel.value, big: isBig })
-        );
+        go('Fim', { score: scoreLabel.value, big: isBig });
       });
     });
 
@@ -299,6 +296,33 @@ function levelQuatro(big) {
       go('game', { score: 0, big: isBig });
     });
   });
+  scene('Fim', ({ score }) => {
+    add([
+      text(
+        `Parabens voce concluio o jogo 
+com total de ${score} moedas`,
+        { size: 22 }
+      ),
+      origin('center'),
+      pos(width() / 2, height() / 2),
+    ]);
+    add([
+      text('[aperte espaco!!].wavy'),
+      {
+        font: 'sinko',
+        textSize: 18,
+        styles: {
+          wavy: (idx, ch) => ({
+            color: rgb(255, 255, 255),
+            pos: vec2(240, 200),
+          }),
+        },
+      },
+    ]);
+    onKeyPress('space', () => {
+      go('game', menu());
+    });
+  });
   go('game', { score: 0, big: isBig });
 }
-export default levelQuatro;
+export default levelSeis;
