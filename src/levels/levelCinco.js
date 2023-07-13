@@ -1,5 +1,5 @@
-import levelCinco from './levelCinco';
-function levelQuatro(big) {
+import levelSeis from './levelSeis';
+function levelCinco(big) {
   loadSprite('bloco', 'sprites/bloco.png');
   loadSprite('tijolos', 'sprites/tijolos.png');
   loadSprite('bg', 'sprites/background.png');
@@ -91,7 +91,7 @@ function levelQuatro(big) {
         value: score,
       },
     ]);
-    add([text('level: 4', { size: 15 }), pos(30, 6)]);
+    add([text('level: 5', { size: 15 }), pos(30, 6)]);
 
     const maps = [
       '2                                2',
@@ -99,16 +99,16 @@ function levelQuatro(big) {
       '2                                2',
       '2                                2',
       '2                                2',
-      '2              5                 2',
+      '2             555555             2',
       '2                                2',
       '2                                2',
-      '2              2                 2',
+      '2            22222222            2',
+      '2           2        2           2',
+      '2         2            2         2',
       '2                                2',
-      '2        2          2            2',
-      '2       22      2   22           2',
-      '2     2222    2     2222         2',
-      '2   222222          222222    3  2',
-      '2  2222222          2222222      2',
+      '2      2                  2      2',
+      '2                              3 2',
+      '2    2                      2    2',
       '1111111111111111111111111111111111',
       '1111111111111111111111111111111111',
     ];
@@ -200,7 +200,7 @@ function levelQuatro(big) {
         go(
           'game',
           { score: scoreLabel.value, big: isBig },
-          levelCinco({ score: scoreLabel.value, big: isBig })
+          levelSeis({ score: scoreLabel.value, big: isBig })
         );
       });
     });
@@ -301,4 +301,4 @@ function levelQuatro(big) {
   });
   go('game', { score: 0, big: isBig });
 }
-export default levelQuatro;
+export default levelCinco;

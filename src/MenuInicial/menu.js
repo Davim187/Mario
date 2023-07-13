@@ -1,5 +1,5 @@
 import levelUm from '../levels/levelUm';
-
+import kaboom from 'kaboom';
 function menu() {
   loadSprite('bloco', 'sprites/bloco.png');
   loadSprite('tijolos', 'sprites/tijolos.png');
@@ -26,7 +26,9 @@ function menu() {
       },
     },
   });
-
+  function fecharPagina() {
+    var red = 'https://2000.kaboomjs.com/#onTouchEnd';
+  }
   function addButton(txt, p, f) {
     const btn = add([
       text(txt, { size: 28 }),
@@ -124,7 +126,6 @@ function menu() {
     });
 
     addButton('Start', vec2(340, 140), () => levelUm());
-    addButton('Quit', vec2(340, 170), () => debug.log('bye'));
 
     add([
       text('[Mario].wavy'),
